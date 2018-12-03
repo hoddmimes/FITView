@@ -12,6 +12,7 @@ So if you have an interest in the program and/or source here it is.  Maybe it ca
 Garmin provides an SDK for processing FIT files. The SDK can found [here](https://www.thisisant.com/resources/fit/)
 The Graphs are presented with [JFreeChart](http://www.jfree.org/jfreechart/). 
 
+*The program has currently only been tested with output files from Zwift where candence, altitude, speed, power and heart rate data has been available. Displaying files not having all these data vaialble might result in an unexpected/unwanted result :-) I will happily fix these issues if you send me an example file.*
 
 
 ![Screen Captured](Capture.PNG)
