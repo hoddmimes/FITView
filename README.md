@@ -14,8 +14,8 @@ The Graphs are presented with [JFreeChart](http://www.jfree.org/jfreechart/).
 
 *The program has currently only been tested with output files from Zwift where candence, altitude, speed, power and heart rate data has been available. Displaying files not having all these data variables might result in an unexpected/unwanted result :-) I will happily fix these issues if you send me an example file.*
 
-If you would like to test/use the program there are a runnable file in the directory .kit Download the jars,cfg and bat file to a directory execute the bat file to start the program. 
-
+If you would like to test/use the program there is zip file on the top level **fitview-*n.n*.zip**
+Unzip the file and execute the startfile *fitview.bat* on Windows and *fitview.sh* on Linux platforms. 
 
 ![Screen Captured](Capture.PNG)
 
