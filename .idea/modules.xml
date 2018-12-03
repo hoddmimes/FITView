@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FITView.iml" filepath="$PROJECT_DIR$/.idea/modules/FITView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FITView_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FITView_main.iml" group="FITView" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FITView_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FITView_test.iml" group="FITView" />
+    </modules>
+  </component>
+</project>
