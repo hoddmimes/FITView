@@ -300,8 +300,9 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
         mSliderPanel.add(mSliderFillPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         mSliderFillPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10), null));
         mIntervalLabel = new JLabel();
+        mIntervalLabel.setEnabled(false);
         mIntervalLabel.setText("Interval Length (10 sec)");
-        mSliderFillPanel.add(mIntervalLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(160, -1), null, 0, false));
+        mSliderFillPanel.add(mIntervalLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(170, -1), null, 0, false));
         mIntervalSlider = new JSlider();
         mIntervalSlider.setToolTipText("Set interval length");
         mSliderFillPanel.add(mIntervalSlider, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(360, -1), null, 0, false));

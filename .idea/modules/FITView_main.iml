@@ -9,12 +9,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: com.intellij:forms_rt:7.0.3" level="project" />
-    <orderEntry type="library" name="Gradle: asm:asm-commons:3.0" level="project" />
-    <orderEntry type="library" name="Gradle: com.jgoodies:forms:1.1-preview" level="project" />
-    <orderEntry type="library" name="Gradle: jdom:jdom:1.0" level="project" />
-    <orderEntry type="library" name="Gradle: asm:asm-tree:3.0" level="project" />
-    <orderEntry type="library" name="Gradle: asm:asm:3.0" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -27,7 +21,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../lib/jfreechart-1.0.19.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../lib/jfreechar-1.0.19.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -42,5 +36,11 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Gradle: com.intellij:forms_rt:7.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm-commons:3.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.jgoodies:forms:1.1-preview" level="project" />
+    <orderEntry type="library" name="Gradle: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm-tree:3.0" level="project" />
+    <orderEntry type="library" name="Gradle: asm:asm:3.0" level="project" />
   </component>
 </module>
