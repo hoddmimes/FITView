@@ -7,7 +7,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36ed1992-957e-45b7-b7e0-d4e86eafad48" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/kit/FITView.zip" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/kit/FITView.jar" afterPath="$PROJECT_DIR$/kit/FITView.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java" afterPath="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -64,7 +68,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
@@ -73,6 +77,26 @@
                 <folding />
               </first_editor>
               <second_editor />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FITView.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="226">
+              <caret line="330" column="36" lean-forward="false" selection-start-line="330" selection-start-column="36" selection-end-line="330" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -89,8 +113,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>valida</find>
-      <find>validate</find>
       <find>generateSe</find>
       <find>vamcalc</find>
       <find>mRender</find>
@@ -119,6 +141,8 @@
       <find>initApp</find>
       <find>INIT_VAM_SMOOTH</find>
       <find>interval</find>
+      <find>main</find>
+      <find>setLookAndFeel</find>
     </findStrings>
     <replaceStrings>
       <replace>set</replace>
@@ -444,14 +468,14 @@
         <option value="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/VAMCalculator.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/PlotPanel.java" />
         <option value="$PROJECT_DIR$/build.gradle" />
-        <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.form" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-41" />
     <option name="y" value="31" />
     <option name="width" value="2809" />
@@ -479,6 +503,41 @@
               <item name="FITView" type="b2602c69:ProjectViewProjectNode" />
               <item name="FITView" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
             </path>
+            <path>
+              <item name="FITView" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FITView" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="FITView" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FITView" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+            <path>
+              <item name="FITView" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FITView" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="FITView" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FITView" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="fitview" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="FITView" type="b2602c69:ProjectViewProjectNode" />
+              <item name="FITView" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="fitview" type="462c0819:PsiDirectoryNode" />
+              <item name="FITView" type="e9f4de52:FormNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -505,6 +564,9 @@
     <property name="ignore_missing_gitignore" value="true" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hoddmimes.fitview" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Bertilsson\source\FITView\src\test\java\com\hoddmimes\fitview" />
       <recent name="C:\Users\Bertilsson\source\FITView\src\main\java\com\hoddmimes\fitview" />
@@ -729,7 +791,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-5" y="-5" width="2570" height="1420" extended-state="6" />
+    <frame x="-5" y="-5" width="2570" height="1420" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -834,7 +896,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java</url>
-          <line>473</line>
+          <line>486</line>
           <properties />
           <option name="timeStamp" value="65" />
         </line-breakpoint>
@@ -848,16 +910,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1580">
           <caret line="79" column="0" lean-forward="false" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-          <folding>
-            <element signature="e#33185#33443#0" expanded="false" />
-            <element signature="e#33442#33443#0" expanded="false" />
-            <element signature="e#37083#37084#0" expanded="false" />
-            <element signature="e#37128#37129#0" expanded="false" />
-            <element signature="e#37183#37184#0" expanded="false" />
-            <element signature="e#37221#37222#0" expanded="false" />
-            <element signature="e#49077#49078#0" expanded="false" />
-            <element signature="e#49132#49133#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1025,14 +1078,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.ignore" />
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="160">
-          <caret line="8" column="8" lean-forward="false" selection-start-line="8" selection-start-column="8" selection-end-line="8" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/PlotPanel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="237">
@@ -1055,23 +1100,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="396" column="53" lean-forward="false" selection-start-line="396" selection-start-column="44" selection-end-line="396" selection-end-column="53" />
-          <folding>
-            <element signature="e#33185#33443#0" expanded="false" />
-            <element signature="e#33442#33443#0" expanded="false" />
-            <element signature="e#37083#37084#0" expanded="false" />
-            <element signature="e#37128#37129#0" expanded="false" />
-            <element signature="e#37183#37184#0" expanded="false" />
-            <element signature="e#37221#37222#0" expanded="false" />
-            <element signature="e#49077#49078#0" expanded="false" />
-            <element signature="e#49132#49133#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.form">
       <provider selected="true" editor-type-id="ui-designer">
         <state />
@@ -1085,6 +1113,22 @@
             <folding />
           </first_editor>
           <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/hoddmimes/fitview/FITView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="330" column="36" lean-forward="false" selection-start-line="330" selection-start-column="36" selection-end-line="330" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="0" lean-forward="false" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

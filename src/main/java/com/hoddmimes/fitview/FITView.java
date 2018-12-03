@@ -332,13 +332,26 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
         mRecordEntries = new ArrayList<>(12000);
     }
 
-    private static void setLookAndFeel(String lf) throws Exception {
+    private static void setLookAndFeel(String option1, String option2) throws Exception {
+        boolean tFoundAndSet = false;
+
         try {
             for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                System.out.println(info.getName());
-                if (lf.equals(info.getName())) {
+                if (option1.equals(info.getName())) {
                     UIManager.setLookAndFeel(info.getClassName());
+                    tFoundAndSet = true;
+                    System.out.println("Setting L&F to " + info.getClassName().toString());
                     //break;
+                }
+            }
+            if (!tFoundAndSet) {
+                for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                    //System.out.println(info.getName());
+                    if (option2.equals(info.getName())) {
+                        UIManager.setLookAndFeel(info.getClassName());
+                        tFoundAndSet = true;
+                        System.out.println("Setting L&F to " + info.getClassName().toString());
+                    }
                 }
             }
         } catch (Exception e) {
@@ -535,7 +548,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
 
     public static void main(String[] args) {
         try {
-            FITView.setLookAndFeel("Windows"); // Nimbus
+            setLookAndFeel("Windows", "Nimbus");
         } catch (Exception e) {
             e.printStackTrace();
         }
