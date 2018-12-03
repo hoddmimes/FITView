@@ -70,10 +70,10 @@ set CMD_LINE_ARGS=%$
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%DIRNAME%\FITView.jar
+set CLASSPATH=%DIRNAME%\FITView.jar;%DIRNAME%\fit.jar;%DIRNAME%\jcommon-1.0.23.jar;%DIRNAME%\jfreechart-1.0.19.jar
 
 @rem Execute route-guide-client
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS%  -jar "%DIRNAME%\FITView.jar  %CMD_LINE_ARGS%
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS%  -classpath %CLASSPATH% com.hoddmimes.fitview.FITView  %CMD_LINE_ARGS%
 
 :end
 @rem End local scope for the variables with windows NT shell

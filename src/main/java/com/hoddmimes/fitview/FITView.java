@@ -86,6 +86,9 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
     private JLabel mKgLbl;
     private JButton buttonOK;
 
+    private static int INIT_POWER_SMOOTH = 0;
+    private static int INIT_VAM_SMOOTH = 0;
+
     private PlotPanel mPlotPanel;
     private ArrayList<RecordMesg> mRecordEntries;
     private SessionMesg mSessionMessage;
@@ -300,9 +303,9 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
         mSliderPanel.add(mSliderFillPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         mSliderFillPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10), null));
         mIntervalLabel = new JLabel();
-        mIntervalLabel.setEnabled(false);
+        mIntervalLabel.setEnabled(true);
         mIntervalLabel.setText("Interval Length (10 sec)");
-        mSliderFillPanel.add(mIntervalLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(170, -1), null, 0, false));
+        mSliderFillPanel.add(mIntervalLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(160, -1), null, 0, false));
         mIntervalSlider = new JSlider();
         mIntervalSlider.setToolTipText("Set interval length");
         mSliderFillPanel.add(mIntervalSlider, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(360, -1), null, 0, false));
@@ -381,7 +384,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
 
 
         mIntervalSlider.setToolTipText(Integer.toString(mIntervalSlider.getValue()));
-        mIntervalLabel.setText("Interval Lengt (" + mIntervalSlider.getValue() + " sec)");
+        mIntervalLabel.setText("Interval Length (" + mIntervalSlider.getValue() + " sec)");
 
         mIntervalSlider.addChangeListener(new ChangeListener() {
             @Override
@@ -391,7 +394,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
                     int tNewValue = adjustValue(tSlider.getValue(), tSlider.getMinimum(), tSlider.getMaximum());
                     tSlider.setValue(tNewValue);
                     tSlider.setToolTipText(Double.toString(tNewValue));
-                    mIntervalLabel.setText("Interval Lengt (" + tNewValue + " sec)");
+                    mIntervalLabel.setText("Interval Length (" + tNewValue + " sec)");
                     mSumIntervalHeartrateLbl.setText("Heart Rate (" + tNewValue + " sec)");
                     mSumIntervalPowerLbl.setText("Power (" + tNewValue + " sec)");
                     mSumIntervalCandenceLbl.setText("Cadence (" + tNewValue + " sec)");
@@ -470,6 +473,15 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
 
         mAppCfg = new AppConfiguration();
         mAppCfg.loadProperties();
+        if (INIT_POWER_SMOOTH > 0) {
+            mAppCfg.setPowerSmoothInterval(INIT_POWER_SMOOTH);
+            mAppCfg.saveProperties();
+        }
+        if (INIT_VAM_SMOOTH > 0) {
+            mAppCfg.setVAMCalculateInterval(INIT_VAM_SMOOTH);
+            mAppCfg.saveProperties();
+        }
+
 
         mRiderWeightTxt.setText(mAppCfg.getWeightAsString());
 
@@ -528,6 +540,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
             e.printStackTrace();
         }
 
+        parseArguments(args);
         FITView dialog = new FITView();
         dialog.initApp();
         dialog.pack();
@@ -536,6 +549,22 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
 
         dialog.setVisible(true);
 
+    }
+
+
+    private static void parseArguments(String[] args) {
+        int i = 0;
+        while (i < args.length) {
+            if (args[i].compareToIgnoreCase("-powerSmooth") == 0) {
+                INIT_POWER_SMOOTH = Integer.parseInt(args[i + 1]);
+                i++;
+            }
+            if (args[i].compareToIgnoreCase("-vamSmooth") == 0) {
+                INIT_VAM_SMOOTH = Integer.parseInt(args[i + 1]);
+                i++;
+            }
+            i++;
+        }
     }
 
     private void calculateAndUpdateIntervals(int pInterval) {
@@ -964,6 +993,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
                 return;
             }
         }
+
 
         public void saveAndNotify() {
             this.saveProperties();
