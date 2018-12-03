@@ -14,6 +14,8 @@ The Graphs are presented with [JFreeChart](http://www.jfree.org/jfreechart/).
 
 *The program has currently only been tested with output files from Zwift where candence, altitude, speed, power and heart rate data has been available. Displaying files not having all these data vaialble might result in an unexpected/unwanted result :-) I will happily fix these issues if you send me an example file.*
 
+If you would like to test/use the program there are a runnable file in the directory .kit Download the jar,cfg and bat file to a directory execute the bat file to start the program. 
+
 
 ![Screen Captured](Capture.PNG)
 
