@@ -1,8 +1,6 @@
 package com.hoddmimes.fitview;
 
 import com.garmin.fit.RecordMesg;
-import org.apache.commons.math3.stat.regression.SimpleRegression;
-import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
@@ -16,7 +14,6 @@ public class PlotSeriesData
 {
     private TimeSeries            mSeriesData;
     private JCheckBox             mCheckBox;
-    private SimpleRegression      mRegression;
     private SeriesDataEvaluatorIf mEvaluator;
     private String                mYLabel;
     private boolean               mPlotAvgSeries;
@@ -25,7 +22,6 @@ public class PlotSeriesData
         mEvaluator = pEvalutor;
         mCheckBox = new JCheckBox( pChkBoxLbl );
         mCheckBox.setSelected( false );
-        mRegression = new SimpleRegression();
         mSeriesData = new TimeSeries("");
         mYLabel = pYLabel;
         mPlotAvgSeries = pPlotAvgSeries;
@@ -53,14 +49,12 @@ public class PlotSeriesData
         double tValue = mEvaluator.evaluateRecordMsgData( pRecMsg );
         if (tValue >= 0.0d ) {
             mSeriesData.add( tMs, tValue );
-            mRegression.addData( tMs.getFirstMillisecond(), tValue );
         }
     }
 
     public void clear() {
         mCheckBox.setSelected( false );
         mSeriesData.clear();
-        mRegression.clear();
     }
 
     public TimeSeries getSeriesData() {
