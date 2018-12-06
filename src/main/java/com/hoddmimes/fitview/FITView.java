@@ -452,7 +452,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
                     mRecordEntries.clear();
 
                     tDecoder.decode();
-                    mPlotPanel.setData(mRecordEntries);
+                    mPlotPanel.setData(mRecordEntries, mSessionMessage);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     Popup.showError("FIT Decode failed", "Failed to decode file: " + mInFileText.getText() + "\n" +
@@ -906,6 +906,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
         private static final String KeyWeight = "Weight";
         private static final String KeyPowerSmoothInterval = "PowerSmoothInterval";
         private static final String KeyVAMInterval = "VAMInterval";
+        private static final String KeyPwHrInterval = "PowerHeartrateInterval";
 
         private List<PropertyChangeListener> mChangeListeners;
 
@@ -913,12 +914,14 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
         private double mWeight;
         private int mPowerSmoothInterval;
         private int mVAMCalculateInterval;
+        private int mPwHrCalculateInterval;
 
         public AppConfiguration() {
             mUnitType = UnitType.Metric;
             mPowerSmoothInterval = 5;
             mVAMCalculateInterval = 20;
             mWeight = 0;
+            mPwHrCalculateInterval = 60;
             mChangeListeners = new ArrayList<>();
         }
 
@@ -978,6 +981,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
                 tProp.setProperty(KeyUnitType, getUnitType().toString());
                 tProp.setProperty(KeyVAMInterval, String.valueOf(getVAMCalculateInterval()));
                 tProp.setProperty(KeyWeight, String.valueOf(getWeight()));
+                tProp.setProperty(KeyPwHrInterval, String.valueOf(getPwHrInterval()));
                 tProp.store(tOut, null);
                 tOut.flush();
                 tOut.close();
@@ -1001,6 +1005,7 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
                 setVAMCalculateInterval(Integer.parseInt(tProp.getProperty(KeyVAMInterval, "20")));
                 setUnitType(UnitType.valueOf(tProp.getProperty(KeyUnitType, UnitType.Metric.toString())));
                 setWeight(Double.parseDouble(tProp.getProperty(KeyWeight, "0")));
+                setPwHrInterval(Integer.parseInt(tProp.getProperty(KeyPwHrInterval, "60")));
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -1012,6 +1017,10 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
             this.saveProperties();
         }
 
+
+        public int getPwHrInterval() {
+            return this.mPwHrCalculateInterval;
+        }
 
         public UnitType getUnitType() {
             return mUnitType;
@@ -1035,6 +1044,10 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
 
         public void setPowerSmoothInterval(int mPowerSmoothInterval) {
             this.mPowerSmoothInterval = mPowerSmoothInterval;
+        }
+
+        public void setPwHrInterval(int pPwHrInterval) {
+            this.mPwHrCalculateInterval = pPwHrInterval;
         }
 
         public int getVAMCalculateInterval() {

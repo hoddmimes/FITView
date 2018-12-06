@@ -1,31 +1,33 @@
 package com.hoddmimes.fitview;
 
 import com.garmin.fit.RecordMesg;
+import com.garmin.fit.SessionMesg;
 import org.jfree.chart.*;
+import org.jfree.chart.annotations.XYLineAnnotation;
 import org.jfree.chart.axis.DateAxis;
-import org.jfree.chart.axis.DateTickMarkPosition;
-import org.jfree.chart.axis.NumberAxis;
+
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.XYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
+
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.util.RelativeDateFormat;
 import org.jfree.data.time.*;
 import org.jfree.data.xy.XYDataset;
 
 import javax.swing.*;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 public class PlotPanel extends JPanel
 {
@@ -36,34 +38,36 @@ public class PlotPanel extends JPanel
     private static final int PLOT_SPEED = 4;
     private static final int PLOT_VAM = 5;
     private static final int PLOT_ALTITUDE = 6;
+    private static final int PLOT_PW_HR = 7;
 
     private static final long serialVersionUID = 1L;
 
     //Variables
-    private JFreeChart  mChart;
-    private RelativeDateFormat mRelativeFormat;
-    private  JPanel     mControlPanel;
-    private  ChartPanel mChartPanel;
-    private  JCheckBox  mPowerCheckBox;
-    private  JCheckBox  mHeartCheckBox;
-    private  JCheckBox  mAscentCheckBox;
-    private  JCheckBox  mSpeedCheckBox;
-    private  JCheckBox  mVAMCheckBox;
-    private  JCheckBox  mAltitudeCheckBox;
-    private  int        mCurrentPlotType = PLOT_NONE;
-    //private  JButton    mResetButton;
+    private JFreeChart           mChart;
+    private RelativeDateFormat   mRelativeFormat;
+    private  JPanel              mControlPanel;
+    private ChartPanel            mChartPanel;
 
-    TimeSeries    mPowerSeries;
-    TimeSeries    mHeartSeries;
-    TimeSeries    mAscentSeries;
-    TimeSeries    mSpeedSeries;
-    TimeSeries    mVAMSeries;
-    TimeSeries    mAltitudeSeries;
-    TimeSeriesCollection mSeriesCollection;
+    private PlotSeriesData       mCurrentPlotType = null;
+    TimeSeriesCollection         mSeriesCollection;
+    SessionMesg                  mSessionMessage;
 
-    java.util.List<RecordMesg> mLogEntries;
-    long mFirstTimeEntry = 0;
-    FITView.AppConfiguration mAppCfg;
+
+    java.util.List<RecordMesg>   mLogEntries;
+    FITView.AppConfiguration     mAppCfg;
+
+
+    PlotSeriesData mDataPower;
+    PlotSeriesData mDataHeartRate;
+    PlotSeriesData mDataSpeed;
+    PlotSeriesData mDataElevation;
+    PlotSeriesData mDataVAM;
+    PlotSeriesData mDataPwHr;
+    PlotSeriesData mDataEmpty;
+    List<PlotSeriesData> mDataList;
+
+
+
 
     PlotPanel(FITView.AppConfiguration pAppCfg) {
         super( new BorderLayout());
@@ -71,36 +75,32 @@ public class PlotPanel extends JPanel
 
         mAppCfg = pAppCfg;
 
+        mDataList = new ArrayList<>();
+        mDataPower = new PlotSeriesData( true,"Power","Watt",new PowerEvaluator( mAppCfg.getPowerSmoothInterval()));
+        mDataList.add( mDataPower );
+        mDataHeartRate = new PlotSeriesData( true, "Heart Rate","BPM",new HeartRateEvaluator());
+        mDataList.add( mDataHeartRate );
+        mDataSpeed = new PlotSeriesData(true, "Speed","Km/h",new SpeedEvaluator());
+        mDataList.add( mDataSpeed );
+        mDataElevation = new PlotSeriesData(false, "Elevation","Meter",new ElevationEvaluator());
+        mDataList.add( mDataElevation );
+        mDataVAM = new PlotSeriesData( true, "VAM","Meter/h",new VAMEvaluator( mAppCfg.getVAMCalculateInterval()));
+        mDataList.add( mDataVAM );
+        mDataPwHr = new PlotSeriesData( true, "Power/HR","Watt/BPM",new PwHrEvaluator( mAppCfg.getPwHrInterval()));
+        mDataList.add( mDataPwHr );
+        mDataEmpty = new PlotSeriesData( false, null,null, null);
+
         setupControlPanel();
         setupChartPanel();
     }
 
-    private JFreeChart setupChart( int pPlotType ) {
-
-
+    private JFreeChart setupChart( PlotSeriesData pData ) {
         mSeriesCollection = new TimeSeriesCollection();
+        mSeriesCollection.addSeries(pData.getAverageSeries());
+        mSeriesCollection.addSeries( pData.getSeriesData());
 
 
-        switch (pPlotType) {
-            case PLOT_ASCENT:
-                mSeriesCollection.addSeries(mAscentSeries);
-                break;
-            case PLOT_POWER:
-                mSeriesCollection.addSeries(mPowerSeries);
-                break;
-            case PLOT_HEART:
-                mSeriesCollection.addSeries(mHeartSeries);
-                break;
-            case PLOT_SPEED:
-                mSeriesCollection.addSeries(mSpeedSeries);
-                break;
-            case PLOT_VAM:
-                mSeriesCollection.addSeries(mVAMSeries);
-                break;
-            case PLOT_ALTITUDE:
-                mSeriesCollection.addSeries(mAltitudeSeries);
-                break;
-        }
+        mRelativeFormat.setBaseMillis(pData.findFirstNoneZeroValueTime());
 
         // Create chart
         mChart = ChartFactory.createXYBarChart(
@@ -109,7 +109,7 @@ public class PlotPanel extends JPanel
                     true,
                     "",    // Value axis text
                      mSeriesCollection,    // XY Dataset
-                    PlotOrientation.VERTICAL,
+                     PlotOrientation.VERTICAL,
                     false,    // Legend
                     true,    // Tooltips
                     false    // URLs
@@ -138,37 +138,16 @@ public class PlotPanel extends JPanel
         tXAxis.setTickLabelsVisible(true);
         tXAxis.setTickMarksVisible(true);
 
-        switch (pPlotType) {
-            case PLOT_NONE:
-                tPlot.setRangeAxis(null);
-                break;
-            case PLOT_ASCENT:
-                tPlot.setRangeAxis(new NumberAxis("Meter"));
-                break;
-            case PLOT_POWER:
-                tPlot.setRangeAxis(new NumberAxis("Watt"));
-                break;
-            case PLOT_HEART:
-                tPlot.setRangeAxis(new NumberAxis("Bpm"));
-                break;
-            case PLOT_SPEED:
-                tPlot.setRangeAxis(new NumberAxis("Km/h"));
-                break;
-            case PLOT_VAM:
-                tPlot.setRangeAxis(new NumberAxis("Vertical m/h"));
-                break;
-            case PLOT_ALTITUDE:
-                tPlot.setRangeAxis(new NumberAxis("Meter"));
-                break;
-        }
+        //XYLineAnnotation tLineAnnotation = pData.getAverageLine();
+        //if (tLineAnnotation != null) {
+        //    tPlot.addAnnotation( tLineAnnotation );
+        // }
 
-
-        if (pPlotType == PLOT_NONE) {
-            tPlot.setRangeAxis(null);
-        }
+        tPlot.setRangeAxis(pData.getYLabel());
 
         XYLineAndShapeRenderer tRenderer = new XYLineAndShapeRenderer(true, false);
         tRenderer.setSeriesToolTipGenerator(0, new ToolTipGenerator());
+        tRenderer.setSeriesToolTipGenerator(1, new ToolTipGenerator());
 
         DateAxis tAxis = (DateAxis) tPlot.getDomainAxis();
         tAxis.setDateFormatOverride(mRelativeFormat);
@@ -181,17 +160,6 @@ public class PlotPanel extends JPanel
 
     private void setupChartPanel()
     {
-        mPowerSeries = new TimeSeries("Power");
-        mHeartSeries = new TimeSeries("Heart Rate");
-        mSpeedSeries = new TimeSeries("Speed");
-        mAscentSeries = new TimeSeries("Ascent");
-        mVAMSeries = new TimeSeries("VAM");
-        mAltitudeSeries = new TimeSeries("Altitude");
-
-
-
-
-
         mRelativeFormat = new RelativeDateFormat();
         mRelativeFormat.setShowZeroDays(false);
         mRelativeFormat.setShowZeroHours(false);
@@ -202,14 +170,11 @@ public class PlotPanel extends JPanel
         mRelativeFormat.setMinuteFormatter(createNumberFormat(2));
         mRelativeFormat.setSecondFormatter(createNumberFormat(2));
 
-        setupChart( PLOT_NONE );
+        setupChart( mDataEmpty );
 
 
         //NumberAxis tPriceAxis = new NumberAxis("Price");
         //tPlot.setRangeAxis(0, tPriceAxis);
-
-
-
 
         this.repaint();
     }
@@ -223,57 +188,36 @@ public class PlotPanel extends JPanel
         return n;
     }
 
-    private void resetCheckBoxes( int pPlotType ) {
-        mPowerCheckBox.setSelected( false );
-        mHeartCheckBox.setSelected( false );
-        mAscentCheckBox.setSelected( false );
-        mSpeedCheckBox.setSelected( false );
-        mVAMCheckBox.setSelected( false );
-        mAltitudeCheckBox.setSelected( false );
-        switch( pPlotType ) {
-            case PLOT_ALTITUDE:
-                mAltitudeCheckBox.setSelected( true );
-                break;
-            case PLOT_ASCENT:
-                mAscentCheckBox.setSelected( true );
-                break;
-            case PLOT_HEART:
-                mHeartCheckBox.setSelected( true );
-                break;
-            case PLOT_POWER:
-                mPowerCheckBox.setSelected( true );
-                break;
-            case PLOT_SPEED:
-                mSpeedCheckBox.setSelected( true );
-                break;
-            case PLOT_VAM:
-                mVAMCheckBox.setSelected( true );
-                break;
+    private void resetCheckBoxes( PlotSeriesData pPlotData ) {
+        for( PlotSeriesData psd : mDataList ) {
+            psd.getCheckBox().setSelected(false);
+        }
+        mCurrentPlotType = pPlotData;
+
+        if (pPlotData != null) {
+            pPlotData.getCheckBox().setSelected(true);
         }
     }
 
     private void clearData() {
-        mPowerSeries.clear();
-        mHeartSeries.clear();
-        mAscentSeries.clear();
-        mSpeedSeries.clear();
-        mVAMSeries.clear();
-        mAltitudeSeries.clear();
+        for( PlotSeriesData psd : mDataList ) {
+            psd.clear();
+        }
         mLogEntries = null;
     }
 
-    void setData(java.util.List<RecordMesg> pLogEntries) {
+    void setData(java.util.List<RecordMesg> pLogEntries, SessionMesg pSessionMessage) {
         clearData();
-        resetCheckBoxes(PLOT_NONE);
+        resetCheckBoxes(null);
         mLogEntries = pLogEntries;
+        mSessionMessage = pSessionMessage;
         generateSeries();
     }
 
 
-    private void setSerie( int pPlotType) {
-            resetCheckBoxes( pPlotType );
-            setupChart( pPlotType );
-            mCurrentPlotType = pPlotType;
+    private void setSerie( PlotSeriesData pPlotData) {
+            resetCheckBoxes( pPlotData );
+            setupChart( pPlotData );
             mChart.fireChartChanged();
             super.repaint();
         }
@@ -282,27 +226,11 @@ public class PlotPanel extends JPanel
 
 
     private void generateSeries() {
-        mFirstTimeEntry = (mLogEntries.get(0).getTimestamp().getTimestamp() * 1000L);
-        mRelativeFormat.setBaseMillis( mFirstTimeEntry );
-        PowerSmoother tPwr = new PowerSmoother( mAppCfg.getPowerSmoothInterval()); // Smooth power over 4 sec
-        AltitudeAccumulator tAlt = new AltitudeAccumulator();
-        VAMCalculator   tVAM = new VAMCalculator( mAppCfg.getVAMCalculateInterval() );
-
-
         for( RecordMesg rm : mLogEntries) {
-            Millisecond tTime = new Millisecond( new Date(rm.getTimestamp().getTimestamp() * 1000L));
-            mPowerSeries.add(tTime, tPwr.add(rm));
-            mAscentSeries.add( tTime, tAlt.add(rm) );
-            mAltitudeSeries.add( tTime, rm.getAltitude().intValue());
-            mSpeedSeries.add( tTime, (rm.getSpeed() * 3.6d));
-            mHeartSeries.add( tTime, rm.getHeartRate().intValue());
-            double tVAMValue = tVAM.add(rm);
-            if (tVAMValue >= 0) {
-                //mVAMSeries.advanceTime();
-                mVAMSeries.add( tTime, tVAMValue);
+            for(PlotSeriesData psd : mDataList ) {
+                psd.add( rm );
             }
         }
-
     }
 
 
@@ -311,68 +239,18 @@ public class PlotPanel extends JPanel
         JPanel tCheckBoxPanel = new JPanel( new FlowLayout());
         JPanel tButtonPanelPanel = new JPanel( new FlowLayout());
 
-        // Create and add check boxes
-        mPowerCheckBox = new JCheckBox("Power", false);
-        mPowerCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Power Check Box ");
-                setSerie( PLOT_POWER );
-            }
-        });
-        tCheckBoxPanel.add( mPowerCheckBox );
 
-        mHeartCheckBox = new JCheckBox("Heart Rate", false);
-        mHeartCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Heart Rate Check Box ");
-                setSerie( PLOT_HEART );
-            }
-        });
-        tCheckBoxPanel.add( mHeartCheckBox );
-
-        mSpeedCheckBox = new JCheckBox("Speed", false);
-        mSpeedCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Speed Check Box ");
-                setSerie( PLOT_SPEED);
-            }
-        });
-        tCheckBoxPanel.add( mSpeedCheckBox );
-
-        mVAMCheckBox = new JCheckBox("VAM", false);
-        mVAMCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("VAM Check Box ");
-                setSerie( PLOT_VAM);
-            }
-        });
-        tCheckBoxPanel.add( mVAMCheckBox );
-
-        mAltitudeCheckBox = new JCheckBox("Altitude", false);
-        mAltitudeCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Altitude Check Box ");
-                setSerie( PLOT_ALTITUDE);
-            }
-        });
-        tCheckBoxPanel.add( mAltitudeCheckBox );
+        for( PlotSeriesData psd : mDataList ) {
+            tCheckBoxPanel.add( psd.getCheckBox() );
+            psd.getCheckBox().addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                  setSerie( psd );
+                }
+            });
+        }
 
 
-
-        mAscentCheckBox = new JCheckBox("Ascent", false);
-        mAscentCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Ascent Check Box ");
-                setSerie( PLOT_ASCENT);
-            }
-        });
-        tCheckBoxPanel.add( mAscentCheckBox );
 
         mControlPanel.add( tCheckBoxPanel, BorderLayout.CENTER );
 
@@ -396,63 +274,190 @@ public class PlotPanel extends JPanel
     }
 
 
-    private class AltitudeAccumulator
+    private class ElevationEvaluator implements SeriesDataEvaluatorIf
     {
-        int mTotAlt;
-        int mLatestAlt;
+        double mTotAlt;
+        double mLatestAlt;
 
-        AltitudeAccumulator() {
+        ElevationEvaluator() {
             mTotAlt = 0;
             mLatestAlt = -1;
         }
 
-        int add( RecordMesg rm ) {
+        @Override
+        public double evaluateRecordMsgData( RecordMesg rm ) {
             int a = rm.getAltitude().intValue();
             if (mLatestAlt < 0) {
                 mLatestAlt = a;
                 return mTotAlt;
             }
-            int v = a - mLatestAlt;
-            mTotAlt += (v > 0) ? v : 0;
+            double v = a - mLatestAlt;
+            mTotAlt += (v > 0) ? v : 0.0d;
             mLatestAlt = a;
             return mTotAlt;
         }
 
-        int getTotalAltitude() {
+        @Override
+        public String formatToolTipValue(Number pValue) {
+            return String.valueOf( pValue.intValue() );
+        }
+
+        double getTotalAltitude() {
             return mTotAlt;
         }
     }
 
 
-    private class PowerSmoother
-    {
-        int mSmoothInterval;
-        LinkedList<Integer> mList;
 
-        PowerSmoother( int pSmoothInterval ) {
+
+    class HeartRateEvaluator implements SeriesDataEvaluatorIf
+    {
+        @Override
+        public double evaluateRecordMsgData(RecordMesg pRecMsg) {
+            return pRecMsg.getHeartRate().doubleValue();
+        }
+
+        @Override
+        public String formatToolTipValue(Number pValue) {
+            return String.valueOf( pValue.intValue() );
+        }
+    }
+
+    class SpeedEvaluator implements SeriesDataEvaluatorIf
+    {
+        @Override
+        public double evaluateRecordMsgData(RecordMesg pRecMsg) {
+            return (pRecMsg.getSpeed().doubleValue() * 3.6d);
+        }
+
+        @Override
+        public String formatToolTipValue(Number pValue) {
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            nf.setMaximumFractionDigits(1);
+            nf.setMinimumFractionDigits(1);
+            return nf.format( pValue.doubleValue());
+        }
+    }
+
+    class PowerEvaluator implements SeriesDataEvaluatorIf
+    {
+        private int mSmoothInterval;
+        private LinkedList<Double> mList;
+
+        PowerEvaluator( int pSmoothInterval ) {
             mSmoothInterval = pSmoothInterval;
             mList = new LinkedList<>();
         }
 
-        private int avg() {
-            double tSum = 0;
-            for( Integer i : mList ) {
-                tSum += (double) i;
-            }
-            double d = tSum / (double) mList.size();
-            return (int) Math.round(d);
+        @Override
+        public String formatToolTipValue(Number pValue) {
+            return String.valueOf( pValue.intValue() );
         }
 
-        int add( RecordMesg pRecMsg ) {
-            int v = pRecMsg.getPower().intValue();
+        @Override
+        public double evaluateRecordMsgData(RecordMesg pRecMsg) {
+            double v = pRecMsg.getPower().doubleValue();
             mList.addLast(v);
             if (mList.size() > mSmoothInterval) {
                 mList.removeFirst();
             }
-            return avg();
+            return mList.stream().mapToDouble( Double::doubleValue ).average().orElse(0.0d);
+        }
+    }
+
+    class PwHrEvaluator implements SeriesDataEvaluatorIf {
+        int mInterval;
+
+        double mLatestValue,x,mSum;
+        LinkedList<Double> mPower;
+        LinkedList<Double> mHeartrate;
+
+
+        PwHrEvaluator(int pInterval ) {
+            mInterval = pInterval;
+            mPower = new LinkedList<>();
+            mHeartrate = new LinkedList<>();
         }
 
+        @Override
+        public String formatToolTipValue(Number pValue) {
+            NumberFormat nf = NumberFormat.getNumberInstance();
+            nf.setMaximumFractionDigits(2);
+            nf.setMinimumFractionDigits(2);
+            return nf.format( pValue.doubleValue());
+        }
+
+        @Override
+        public double evaluateRecordMsgData( RecordMesg rm ) {
+            if (rm.getAltitude() == null) {
+                return -1.0d;
+            }
+
+            mPower.addLast( rm.getPower().doubleValue());
+            mHeartrate.addLast( rm.getHeartRate().doubleValue());
+            if (mPower.size() > mInterval) {
+                mPower.removeFirst();
+            }
+            if (mHeartrate.size() > mInterval) {
+                mHeartrate.removeFirst();
+            }
+
+            if (mPower.size() < mInterval) {
+                return -1.0d;
+            }
+
+            double p = mPower.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            double h = mHeartrate.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            return (h > 0) ? (p/h) : -1.0d;
+        }
     }
+
+
+    class VAMEvaluator implements SeriesDataEvaluatorIf
+    {
+        int mInterval;
+        int mTicks;
+        double mLatestValue,x,mSum;
+
+
+        VAMEvaluator( int pInterval ) {
+            mInterval = pInterval;
+            mSum = 0;
+            mTicks = 0;
+            mLatestValue = -1;
+        }
+
+        @Override
+        public String formatToolTipValue(Number pValue) {
+            return String.valueOf( pValue.intValue() );
+        }
+
+        @Override
+        public double evaluateRecordMsgData( RecordMesg rm ) {
+            if (rm.getAltitude() == null) {
+                return -1;
+            }
+
+            if (mLatestValue < 0) {
+                mLatestValue = rm.getAltitude().doubleValue();
+                return -1;
+            }
+
+            x = rm.getAltitude().doubleValue() - mLatestValue;
+            mLatestValue = rm.getAltitude().doubleValue();
+            mSum += (x > 0) ? x : 0;
+
+            mTicks++;
+            if ((mTicks % mInterval) == 0)
+            {
+                x = mSum * (3600.0d / (double) mInterval);
+                mSum = 0;
+                return x;
+            }
+            return -1;
+        }
+    }
+
 
     private class ToolTipGenerator implements XYToolTipGenerator
     {
@@ -462,29 +467,10 @@ public class PlotPanel extends JPanel
             Number x = pDataSet.getX(pSeries, pItem ); // Time entry
             Number y = pDataSet.getY(pSeries, pItem ); // Time entry
             String  ts = mRelativeFormat.format( new Date( x.longValue()));
-           switch ( mCurrentPlotType ) {
-               case PLOT_ALTITUDE:
-                   return ts + " altitude: " + String.valueOf( y.intValue() ) + " m";
-               case PLOT_ASCENT:
-                   return ts + " total ascent: " + String.valueOf( y.intValue() ) + " m";
-               case PLOT_SPEED:
-                   return ts + " speed: " + String.valueOf( y.intValue() ) + " km/h";
-               case PLOT_HEART:
-                   return ts + " heart rate: " + String.valueOf( y.intValue() ) + " bpm";
-               case PLOT_POWER:
-                   return ts + " power: " + String.valueOf( y.intValue() ) + " W";
-               case PLOT_VAM:
-                   return ts + " VAM: " + String.valueOf( y.intValue() ) + " m/h";
-           }
-            /*
-            if (pDataSet instanceof XYSeriesCollection) {
-                XYSeriesCollection tXYCollection = (XYSeriesCollection) pDataSet;
-                XYSeries tSeries = (XYSeries) tXYCollection.getSeries().get(pSeries);
-                PriceDataItem tItem = (PriceDataItem) tSeries.getDataItem(pItem);
-                return cSDFDate.format(tItem.mDay.mOpenTime) + " price: " + tItem.getYValue();
-            }
-            */
-            return "Series: " + pSeries + " Item: " + pItem;
+
+            return  "         " + ts + "  " + mCurrentPlotType.getToolTipPrefix( pSeries ) +
+                    mCurrentPlotType.formatToolTipValue( y ) + "  " + mCurrentPlotType.getToolTipUnit();
+
         }
     }
 }
