@@ -688,9 +688,12 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
             tComparator = new PowerComparator();
         }
 
-        tSubLst.add(pList.get(tPos++));
+
         while (tPos < pList.size()) {
             // Fill the sublist with records for a interval
+            if (tSubLst.size() == 0) {
+                tSubLst.add(pList.get(tPos++));
+            }
             while ((tPos < pList.size()) && (pList.get(tPos).getTimestamp().getTimestamp() <= tSubLst.getFirst().getTimestamp().getTimestamp() + pIntervalLength)) {
                 tSubLst.add(pList.get(tPos++));
             }
