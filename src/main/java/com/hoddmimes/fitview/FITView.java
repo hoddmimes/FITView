@@ -434,6 +434,14 @@ public class FITView extends JFrame implements MesgListener, PropertyChangeListe
                 if (tStatus == JFileChooser.APPROVE_OPTION) {
                     File tFile = tChooser.getSelectedFile();
                     mInFileText.setText(tFile.getAbsolutePath());
+
+                    /**
+                     * Invoke automatic expansion
+                     */
+                    ActionEvent tEvent = new ActionEvent(mInFileText, 4242, "BROWSE-FILE");
+                    for (ActionListener listener : mInFileText.getActionListeners()) {
+                        listener.actionPerformed(tEvent);
+                    }
                 }
             }
         });
